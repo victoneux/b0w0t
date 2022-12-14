@@ -175,7 +175,7 @@ async def gamble(ctx, *args):
                     random_num = random.random()
                     if random_num > .55:
                         await ctx.channel.send(f"You win! Your bet has been doubled, earning you {amount} XP.")
-                        XP, LVL, leveled_up = lvlup(amount, info[4])
+                        XP, LVL, leveled_up = gain_xp(amount + info[3], info[4])
                         update_user_info(ctx.guild.id,ctx.author.id,info[2],XP,LVL,info[5])
                         if leveled_up:
                             await ctx.channel.send(f"You leveled up! You're now {LVL}.")
@@ -244,7 +244,7 @@ def get_specific_user_info(SRVID, UID):
 def get_lvl_xp(LVL):
     return ( LVL * LVL ) + ( 100 * LVL )
 
-def lvlup(XP, LVL):
+def gain_xp(XP, LVL):
     XP_TO_NEXT = get_lvl_xp(LVL)
 
     leveled_up = False
@@ -286,7 +286,7 @@ def message_sent(SRVID, UID, has_boost):
     
     MSG_CNT += 1
     XP += 20 * xp_boost
-    XP,LVL,leveled_up = lvlup(XP, LVL)
+    XP,LVL,leveled_up = gain_xp(XP, LVL)
 
     if LAST_MSG < DATETIME - datetime.timedelta(seconds=saved_info["spam_limiter_xp"]):
         update_user_info(SRVID, UID, MSG_CNT, XP, LVL, DATETIME)
